@@ -2,8 +2,9 @@
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
 using System.Collections.ObjectModel;
+using System.Runtime.CompilerServices;
 
-namespace ProtonMailQAAuto
+namespace ProtonMailQAAuto.PageObjects
 {
     public abstract class BaseClass
     {
@@ -16,7 +17,6 @@ namespace ProtonMailQAAuto
             _driver = webDriver;
             _driver.Manage().Window.Maximize();
             _waiter = new WebDriverWait(webDriver, TimeSpan.FromSeconds(5));
-            //ClickAgreeWithOnConditions();
         }
 
         public void GoToUrl(string url)
@@ -24,27 +24,34 @@ namespace ProtonMailQAAuto
             _driver.Url = url;
         }
 
-        public void WaitAndClickOnElement(string xPath)
+        public void WaitAndClickOnElementByXPath(string xPath)
         {
-            IWebElement webElement = GetElementsByXPath(xPath).First();
+            IWebElement webElement = _waiter.Until(ExpectedConditions.ElementExists(By.XPath(xPath)));
             webElement.Click();
         }
 
-        public void ClickOnElement(string xPath)
+        public void ClickOnElementByXPath(string xPath)
         {
             IWebElement webElement = _driver.FindElement(By.XPath(xPath));
             webElement.Click();
         }
 
-        public void FindElementAndInputValue(string xPath, string value)
+        public void ClickOnElementByClass(string className)
+        {
+            IWebElement webElement = _driver.FindElement(By.ClassName(className));
+            webElement.Click();
+        }
+
+        public void FindElementByXPathAndInputValue(string xPath, string value)
         {
             IWebElement webElement = _driver.FindElement(By.XPath(xPath));
             webElement.SendKeys(value);
         }
 
-        public IWebElement GetElementByXPath(string xPath)
+        public void FindElementByIDAndInputValue(string id, string value)
         {
-            return _waiter.Until(ExpectedConditions.ElementExists(By.XPath(xPath)));
+            IWebElement webElement = _waiter.Until(ExpectedConditions.ElementExists(By.Id(id)));
+            webElement.SendKeys(value);
         }
 
         public ReadOnlyCollection<IWebElement> GetElementsByXPath(string xPath)
@@ -52,11 +59,15 @@ namespace ProtonMailQAAuto
             return _waiter.Until(ExpectedConditions.PresenceOfAllElementsLocatedBy(By.XPath(xPath)));
         }
 
-        public bool AreUrlContainsKeyword(string keyword)
+        public void CheckPageLoading(string keyword, string namePage)
         {
             _waiter.Until(ExpectedConditions.UrlContains(keyword));
             string pageUrl = _driver.Url;
-            return pageUrl.Contains(keyword.ToLower());
+            if (pageUrl.Contains(keyword))
+            {
+                Console.WriteLine($"{namePage} loaded");
+            }
+            else { throw new Exception($"{namePage} didn't load"); }
         }
 
         public void ClickAgreeWithOnConditions()
@@ -94,5 +105,9 @@ namespace ProtonMailQAAuto
             return textResult;
         }
 
+        public void DelayForLoadingPage(string xPath)
+        {
+            _waiter.Until(ExpectedConditions.PresenceOfAllElementsLocatedBy(By.XPath(xPath)));
+        }
     }
 }

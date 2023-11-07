@@ -1,5 +1,6 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using ProtonMailQAAuto.PageObjects;
 
 namespace ProtonMailQAAuto
 {
@@ -11,7 +12,7 @@ namespace ProtonMailQAAuto
 
             BaseClass protonMailBaseClass = new MainPage(driver);
 
-            Console.WriteLine(protonMailBaseClass.AreUrlContainsKeyword("Proton"));
+            Console.WriteLine(protonMailBaseClass);
 
             driver.Close();
         }
