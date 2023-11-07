@@ -2,21 +2,23 @@
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
 using System.Collections.ObjectModel;
-using System.Runtime.CompilerServices;
+using OpenQA.Selenium.Interactions;
 
 namespace ProtonMailQAAuto.PageObjects
 {
     public abstract class BaseClass
     {
-        protected IWebDriver _driver;
-        protected WebDriverWait _waiter;
+        IWebDriver _driver;
+        WebDriverWait _waiter;
         const string BUTTON_TO_AGREE_WITH_CHANGES = "//button[text()='Continue']";
+        Actions _actions;
 
         public BaseClass(IWebDriver webDriver)
         {
             _driver = webDriver;
             _driver.Manage().Window.Maximize();
-            _waiter = new WebDriverWait(webDriver, TimeSpan.FromSeconds(5));
+            _waiter = new WebDriverWait(webDriver, TimeSpan.FromSeconds(10));
+            _actions = new Actions(_driver);
         }
 
         public void GoToUrl(string url)
@@ -44,7 +46,7 @@ namespace ProtonMailQAAuto.PageObjects
 
         public void FindElementByXPathAndInputValue(string xPath, string value)
         {
-            IWebElement webElement = _driver.FindElement(By.XPath(xPath));
+            IWebElement webElement = _waiter.Until(ExpectedConditions.ElementIsVisible(By.XPath(xPath)));
             webElement.SendKeys(value);
         }
 
@@ -54,9 +56,9 @@ namespace ProtonMailQAAuto.PageObjects
             webElement.SendKeys(value);
         }
 
-        public ReadOnlyCollection<IWebElement> GetElementsByXPath(string xPath)
+        public IWebElement GetElementByXPath(string xPath)
         {
-            return _waiter.Until(ExpectedConditions.PresenceOfAllElementsLocatedBy(By.XPath(xPath)));
+            return _driver.FindElement(By.XPath(xPath));
         }
 
         public void CheckPageLoading(string keyword, string namePage)
@@ -105,9 +107,21 @@ namespace ProtonMailQAAuto.PageObjects
             return textResult;
         }
 
-        public void DelayForLoadingPage(string xPath)
+        public void DelayForLoadingPage(string tagName)
         {
-            _waiter.Until(ExpectedConditions.PresenceOfAllElementsLocatedBy(By.XPath(xPath)));
+            _waiter.Until(ExpectedConditions.PresenceOfAllElementsLocatedBy(By.TagName(tagName)));
+        }
+
+        public void ActionsClickAndInput(string name, string message)
+        {
+            IWebElement item = _driver.FindElement(By.ClassName(name));
+            _actions.Click(item);
+            _actions.GetActiveKeyboard();
+            _actions.KeyDown(Keys.Backspace);
+            Thread.Sleep(1000);
+            _actions.KeyUp(Keys.Tab);
+            //_actions.Click();
+            _actions.SendKeys(message);
         }
     }
 }

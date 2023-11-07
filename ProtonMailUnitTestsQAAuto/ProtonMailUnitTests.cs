@@ -11,12 +11,16 @@ namespace ProtonMailUnitTestsQAAuto
     {
         IWebDriver _driver;
         User _firstUser;
+        string firstUserEmail = "first_person_test@proton.me";
+        string secondUserEmail = "second_person_test@proton.me;";
+        string subject = "Test letter";
+        string mail = "Hello, my friend!";
 
         [TestInitialize]
         public void Initialize()
         {
             _driver = new ChromeDriver();
-            _firstUser = new("First person", "first_person_test");
+            _firstUser = new(_driver, "First person", "first_person_test");
         }
 
         [TestMethod]
@@ -24,17 +28,34 @@ namespace ProtonMailUnitTestsQAAuto
         {
             MainPage mainPage = new(_driver); 
             var loginPage = mainPage.GoToLoginPage();
-            var userPage = loginPage.LoginToMailBox(_firstUser);
-            mainPage = userPage.LogoutOfUserMailBox();
-            Thread.Sleep(1000);
+            Assert.IsTrue(_driver.Url.Contains("login"));
+        }
+
+        [TestMethod]
+        public void CheckLoginAndLogoutMailbox()
+        {
+            _firstUser.GoIntoYourMailbox(_driver);
+            Assert.IsTrue(_driver.Url.Contains("inbox"));
+            Thread.Sleep(3000);
+            var mainPage = _firstUser.LogoutFromMailbox();
             Assert.IsTrue(_driver.Url.Contains("proton"));
+        }
+
+        [TestMethod]
+
+        public void CheckSendEmail()
+        {
+            _firstUser.GoIntoYourMailbox(_driver);
+            Assert.IsTrue(_driver.Url.Contains("inbox"));
+            _firstUser.CreateNewEmail(secondUserEmail, subject, mail);
+
         }
 
 
         [TestCleanup]
         public void Cleanup()
         {
-            Thread.Sleep(5000);
+            _firstUser.LogoutFromMailbox();
             _driver.Dispose();
         }
 
