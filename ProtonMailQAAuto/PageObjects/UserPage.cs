@@ -20,14 +20,15 @@ namespace ProtonMailQAAuto.PageObjects
         const string UNREAD_EMAIL_BUTTON = "//button[@data-testid='filter-dropdown:show-unread']";
         const string OPEN_NEW_EMAIL = "//span[@data-testid='message-row:subject']";
         const string IFRAME_EMAIL_CONTANT = "//*[@title='Email content']";
-        const string BODY_OF_LETTER = "//div[@id='proton-root']/div/div/div[1]";
-
+        const string BODY_OF_LETTER = "//*[contains(text(),'Sent with ISsoft')]";
+        const string REFRESH_MAILBOX = "//*[@data-testid='navigation-link:inbox']";
+        const string TITLE_FIELD = "//*[@data-testid='conversation-header:subject']";
 
         public UserPage(IWebDriver driver) : base(driver)
         {
             _driver = driver;
             CheckPageLoading(URL_PART, NAME_PAGE);
-            DelayForLoadingPage("button");
+            DelayForLoadingPage(NEW_MESSAGE_BUTTON);
         }
 
         public MainPage LogoutOfUserMailBox()
@@ -60,7 +61,7 @@ namespace ProtonMailQAAuto.PageObjects
         {
             ClickOnElementByXPath(OPTION_FOR_LETTER_FIELD_BUTTON);
             WaitAndClickOnElementByXPath(CHANGE_TYPE_LETTER_FIELD_BUTTON);
-            FindElementByXPathAndInputValue(LETTER_INPUT_FIELD, mail);
+            ClearElementByXPathAndInputValue(LETTER_INPUT_FIELD, mail);
             Console.WriteLine("Letter writed");
         }
 
@@ -81,11 +82,9 @@ namespace ProtonMailQAAuto.PageObjects
             return CheckElementPresence(OPEN_NEW_EMAIL);
         }
 
-        internal IWebElement OpenListEmails()
+        internal void OpenListEmails()
         {
-            var email = GetElementByXPath(OPEN_NEW_EMAIL);
-            email.Click();
-            return email;
+            WaitAndClickOnElementByXPath(OPEN_NEW_EMAIL);
         }
 
         internal string GetEmail()
@@ -100,5 +99,17 @@ namespace ProtonMailQAAuto.PageObjects
             WaitAndClickOnElementByXPath(REPLY_BUTTON);
             Console.WriteLine("Send second mail");
         }
+
+        internal void RefreshMailbox()
+        {
+            WaitAndClickOnElementByXPath(REFRESH_MAILBOX);
+        }
+
+        internal string GetTitle()
+        {
+            var senderEmail = GetElementByXPath(TITLE_FIELD);
+            return senderEmail.GetAttribute("title");
+        }
+
     }
 }

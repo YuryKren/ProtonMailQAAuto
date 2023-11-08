@@ -1,8 +1,6 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
-using System.Collections.ObjectModel;
-using OpenQA.Selenium.Interactions;
 
 namespace ProtonMailQAAuto.PageObjects
 {
@@ -14,7 +12,7 @@ namespace ProtonMailQAAuto.PageObjects
         {
             _driver = webDriver;
             _driver.Manage().Window.Maximize();
-            _waiter = new WebDriverWait(webDriver, TimeSpan.FromSeconds(5));
+            _waiter = new WebDriverWait(webDriver, TimeSpan.FromSeconds(10));
         }
 
         public void GoToUrl(string url)
@@ -34,16 +32,17 @@ namespace ProtonMailQAAuto.PageObjects
             webElement.Click();
         }
 
-        public void ClickOnElementByClass(string className)
-        {
-            IWebElement webElement = _driver.FindElement(By.ClassName(className));
-            webElement.Click();
-        }
-
         public void FindElementByXPathAndInputValue(string xPath, string value)
         {
             IWebElement webElement = _waiter.Until(ExpectedConditions.ElementIsVisible(By.XPath(xPath)));
             webElement.SendKeys(value);
+        }
+
+        public void ClearElementByXPathAndInputValue(string xPath, string value)
+        {
+            IWebElement webElement = _waiter.Until(ExpectedConditions.ElementIsVisible(By.XPath(xPath)));
+            webElement.Clear();
+            webElement.SendKeys(value + "  Sent with ISsoft");
         }
 
         public void FindElementByIDAndInputValue(string id, string value)
@@ -85,6 +84,7 @@ namespace ProtonMailQAAuto.PageObjects
 
         public string ChangeFrameAndGetElement(string iFrame, string xPath)
         {
+            Thread.Sleep(1000);
             _driver.SwitchTo().Frame(_driver.FindElement(By.XPath(iFrame)));
             var webElement = _driver.FindElement(By.XPath(xPath));
             string textEmail = webElement.Text;
@@ -92,33 +92,10 @@ namespace ProtonMailQAAuto.PageObjects
             return textEmail;
         }
 
-        public int CheckCountOfSearchResults(IWebElement countOfResultsString)
+        public void DelayForLoadingPage(string xPath)
         {
-            string[] findingNumber = countOfResultsString.Text.Split(' ');
-            int n = 0;
-            foreach (string part in findingNumber)
-            {
-                bool success = int.TryParse(part, out n);
-                if (success)
-                {
-                    n = int.Parse(part);
-                    break;
-                }
-            }
-            return n;
+            _waiter.Until(ExpectedConditions.ElementIsVisible(By.XPath(xPath)));
         }
-
-        public List<string> ConvertCollectionFromWebElementToString(ReadOnlyCollection<IWebElement> collection)
-        {
-            List<string> textResult = new(collection.Select(x => x.Text));
-            return textResult;
-        }
-
-        public void DelayForLoadingPage(string tagName)
-        {
-            _waiter.Until(ExpectedConditions.PresenceOfAllElementsLocatedBy(By.TagName(tagName)));
-        }
-
 
     }
 }
