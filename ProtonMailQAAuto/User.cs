@@ -1,5 +1,6 @@
 ﻿using OpenQA.Selenium;
 using ProtonMailQAAuto.PageObjects;
+using System.Linq;
 
 namespace ProtonMailQAAuto
 {
@@ -42,12 +43,29 @@ namespace ProtonMailQAAuto
             _page.EnterSubject(subject);
             _page.WriteLetter(mail);
             _page.ClickToSend();
+            Thread.Sleep(4000);
         }
 
         public void GoIntoYourMailbox(IWebDriver driver)
         {
             MainPage mainPage = new(driver);
             _page = mainPage.GoToLoginPage().LoginToMailBox(this);
+        }
+
+        public bool CheckUnreadEmail()
+        {
+            _page.ClickUnreadLetter();
+
+            return _page.CheckNewEmail();
+        }
+
+        public List<string> GetInformationFromEmail()
+        {
+            List<string> result = new List<string>();
+            IWebElement title = _page.OpenEmail();
+            result.Add(title.Text);
+            result.Add(_page.GetEmail());
+            return result;
         }
 
         public MainPage LogoutFromMailbox() 

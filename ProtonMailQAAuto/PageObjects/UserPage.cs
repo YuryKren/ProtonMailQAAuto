@@ -16,6 +16,10 @@ namespace ProtonMailQAAuto.PageObjects
         const string CHANGE_TYPE_LETTER_FIELD_BUTTON = "//button[@data-testid='editor-to-plaintext']";
         const string LETTER_INPUT_FIELD = "//textarea";
         const string SEND_BUTTON = "//button[@data-testid='composer:send-button']";
+        const string UNREAD_EMAIL_BUTTON = "//button[@data-testid='filter-dropdown:show-unread']";
+        const string OPEN_NEW_EMAIL = "//span[@data-testid='message-row:subject']";
+        const string BODY_OF_LETTER = "//div[@id='proton-root']";
+
 
 
         public UserPage(IWebDriver driver) : base(driver)
@@ -56,6 +60,7 @@ namespace ProtonMailQAAuto.PageObjects
             ClickOnElementByXPath(OPTION_FOR_LETTER_FIELD_BUTTON);
             WaitAndClickOnElementByXPath(CHANGE_TYPE_LETTER_FIELD_BUTTON);
             FindElementByXPathAndInputValue(LETTER_INPUT_FIELD, mail);
+            Console.WriteLine("Letter writed");
         }
 
         internal void ClickToSend()
@@ -64,6 +69,29 @@ namespace ProtonMailQAAuto.PageObjects
             Console.WriteLine("Send mail");
         }
 
+        internal void ClickUnreadLetter()
+        {
+            WaitAndClickOnElementByXPath(UNREAD_EMAIL_BUTTON);
+        }
+
+        internal bool CheckNewEmail()
+        {
+            Thread.Sleep(2000);
+            return CheckElementPresence(OPEN_NEW_EMAIL);
+        }
+
+        internal IWebElement OpenEmail()
+        {
+            var email = GetElementByXPath(OPEN_NEW_EMAIL);
+            email.Click();
+            return email;
+        }
+
+        internal string GetEmail()
+        {
+            var email = GetElementByXPath(BODY_OF_LETTER);
+            return email.Text;
+        }
 
     }
 }

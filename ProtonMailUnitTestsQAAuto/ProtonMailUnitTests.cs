@@ -42,15 +42,41 @@ namespace ProtonMailUnitTestsQAAuto
         }
 
         [TestMethod]
-
         public void CheckSendEmail()
         {
             _firstUser.GoIntoYourMailbox(_driver);
             Assert.IsTrue(_driver.Url.Contains("inbox"));
             _firstUser.CreateNewEmail(secondUserEmail, subject, mail);
-
         }
 
+        [TestMethod]
+        public void CheckNewEmailNegative()
+        {
+            _firstUser.GoIntoYourMailbox(_driver);
+            Assert.IsTrue(_driver.Url.Contains("inbox"));
+            Assert.IsFalse(_firstUser.CheckUnreadEmail());
+        }
+
+        [TestMethod]
+        public void CheckNewEmailPositive()
+        {
+            _firstUser.GoIntoYourMailbox(_driver);
+            Assert.IsTrue(_driver.Url.Contains("inbox"));
+            Assert.IsTrue(_firstUser.CheckUnreadEmail());
+        }
+
+        [TestMethod]
+        public void GetIvormationFromLetter()
+        {
+            _firstUser.GoIntoYourMailbox(_driver);
+            Assert.IsTrue(_driver.Url.Contains("inbox"));
+            List<string> list = _firstUser.GetInformationFromEmail();
+            foreach (string item in list)
+            {
+                Console.WriteLine(item);
+            }
+            Assert.IsTrue(list.Count == 2);
+        }
 
         [TestCleanup]
         public void Cleanup()

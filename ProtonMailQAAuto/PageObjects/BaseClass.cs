@@ -28,7 +28,7 @@ namespace ProtonMailQAAuto.PageObjects
 
         public void WaitAndClickOnElementByXPath(string xPath)
         {
-            IWebElement webElement = _waiter.Until(ExpectedConditions.ElementExists(By.XPath(xPath)));
+            IWebElement webElement = _waiter.Until(ExpectedConditions.ElementIsVisible(By.XPath(xPath)));
             webElement.Click();
         }
 
@@ -52,7 +52,7 @@ namespace ProtonMailQAAuto.PageObjects
 
         public void FindElementByIDAndInputValue(string id, string value)
         {
-            IWebElement webElement = _waiter.Until(ExpectedConditions.ElementExists(By.Id(id)));
+            IWebElement webElement = _waiter.Until(ExpectedConditions.ElementIsVisible(By.Id(id)));
             webElement.SendKeys(value);
         }
 
@@ -72,16 +72,18 @@ namespace ProtonMailQAAuto.PageObjects
             else { throw new Exception($"{namePage} didn't load"); }
         }
 
-        public void ClickAgreeWithOnConditions()
+        public bool CheckElementPresence(string xPath)
         {
-            var foundElements = _driver.FindElements(By.XPath(BUTTON_TO_AGREE_WITH_CHANGES));
+            var foundElements = _driver.FindElements(By.XPath(xPath));
             if (foundElements.Count() != 0)
             {
-                foundElements[0].Click();
+                Console.WriteLine("You have new emails!");
+                return true;
             }
             else
             {
-                Console.WriteLine("There isn't Button \"Agree with the conditions\" ");
+                Console.WriteLine("There aren't new emails");
+                return false;
             }
         }
 
@@ -112,16 +114,6 @@ namespace ProtonMailQAAuto.PageObjects
             _waiter.Until(ExpectedConditions.PresenceOfAllElementsLocatedBy(By.TagName(tagName)));
         }
 
-        public void ActionsClickAndInput(string name, string message)
-        {
-            IWebElement item = _driver.FindElement(By.ClassName(name));
-            _actions.Click(item);
-            _actions.GetActiveKeyboard();
-            _actions.KeyDown(Keys.Backspace);
-            Thread.Sleep(1000);
-            _actions.KeyUp(Keys.Tab);
-            //_actions.Click();
-            _actions.SendKeys(message);
-        }
+
     }
 }
