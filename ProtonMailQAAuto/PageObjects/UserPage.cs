@@ -16,10 +16,11 @@ namespace ProtonMailQAAuto.PageObjects
         const string CHANGE_TYPE_LETTER_FIELD_BUTTON = "//button[@data-testid='editor-to-plaintext']";
         const string LETTER_INPUT_FIELD = "//textarea";
         const string SEND_BUTTON = "//button[@data-testid='composer:send-button']";
+        const string REPLY_BUTTON = "//*[@data-testid='message-view:reply']";
         const string UNREAD_EMAIL_BUTTON = "//button[@data-testid='filter-dropdown:show-unread']";
         const string OPEN_NEW_EMAIL = "//span[@data-testid='message-row:subject']";
-        const string BODY_OF_LETTER = "//div[@id='proton-root']";
-
+        const string IFRAME_EMAIL_CONTANT = "//*[@title='Email content']";
+        const string BODY_OF_LETTER = "//div[@id='proton-root']/div/div/div[1]";
 
 
         public UserPage(IWebDriver driver) : base(driver)
@@ -80,7 +81,7 @@ namespace ProtonMailQAAuto.PageObjects
             return CheckElementPresence(OPEN_NEW_EMAIL);
         }
 
-        internal IWebElement OpenEmail()
+        internal IWebElement OpenListEmails()
         {
             var email = GetElementByXPath(OPEN_NEW_EMAIL);
             email.Click();
@@ -89,9 +90,15 @@ namespace ProtonMailQAAuto.PageObjects
 
         internal string GetEmail()
         {
-            var email = GetElementByXPath(BODY_OF_LETTER);
-            return email.Text;
+            string containsLetter = ChangeFrameAndGetElement(IFRAME_EMAIL_CONTANT, BODY_OF_LETTER);
+            Console.WriteLine($"The contents of letter: {containsLetter}");
+            return containsLetter;
         }
 
+        internal void ClickToReply()
+        {
+            WaitAndClickOnElementByXPath(REPLY_BUTTON);
+            Console.WriteLine("Send second mail");
+        }
     }
 }

@@ -10,15 +10,11 @@ namespace ProtonMailQAAuto.PageObjects
     {
         IWebDriver _driver;
         WebDriverWait _waiter;
-        const string BUTTON_TO_AGREE_WITH_CHANGES = "//button[text()='Continue']";
-        Actions _actions;
-
         public BaseClass(IWebDriver webDriver)
         {
             _driver = webDriver;
             _driver.Manage().Window.Maximize();
-            _waiter = new WebDriverWait(webDriver, TimeSpan.FromSeconds(10));
-            _actions = new Actions(_driver);
+            _waiter = new WebDriverWait(webDriver, TimeSpan.FromSeconds(5));
         }
 
         public void GoToUrl(string url)
@@ -85,6 +81,15 @@ namespace ProtonMailQAAuto.PageObjects
                 Console.WriteLine("There aren't new emails");
                 return false;
             }
+        }
+
+        public string ChangeFrameAndGetElement(string iFrame, string xPath)
+        {
+            _driver.SwitchTo().Frame(_driver.FindElement(By.XPath(iFrame)));
+            var webElement = _driver.FindElement(By.XPath(xPath));
+            string textEmail = webElement.Text;
+            _driver.SwitchTo().DefaultContent();
+            return textEmail;
         }
 
         public int CheckCountOfSearchResults(IWebElement countOfResultsString)

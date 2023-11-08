@@ -6,8 +6,10 @@ namespace ProtonMailQAAuto
 {
     public class User
     {
-        IWebDriver _driver;
         UserPage _page;
+        private string _subject;
+        private string _firstMessage;
+        private string _secondMessage;
         private string _userName;
         public string UserName
         {
@@ -28,22 +30,38 @@ namespace ProtonMailQAAuto
             get { return _password; }
             set { _password = value; }
         }
-        public User(IWebDriver _driver, string name, string login)
+        public User(string name, string login)
         {
             UserName = name;
             LoginMame = login;
             Password = "1qaz!QAZ";
-            this._driver = _driver;
+            FillInTheFieldsOfEMAL(name);
         }
 
-        public void CreateNewEmail(string emailOfRecipient, string subject, string mail)
+        private void FillInTheFieldsOfEMAL(string name)
+        {
+            _subject = $"Letter from {name}";
+            _firstMessage = $"Hello my dear friend! It's me, {name}";
+            _secondMessage = $"OK, and this is me, {name}";
+        }
+
+        public void CreateNewEmail(string emailOfRecipient)
         {
             _page.ClickNewMessageButton();
             _page.EnterRecipientAddress(emailOfRecipient);
-            _page.EnterSubject(subject);
-            _page.WriteLetter(mail);
+            _page.EnterSubject(_subject);
+            _page.WriteLetter(_firstMessage);
             _page.ClickToSend();
-            Thread.Sleep(4000);
+            Thread.Sleep(3000);
+        }
+
+        public void ReplyToLetter()
+        {
+            _page.OpenListEmails();
+            _page.ClickToReply();
+            _page.WriteLetter(_secondMessage);
+            _page.ClickToSend();
+            Thread.Sleep(3000);
         }
 
         public void GoIntoYourMailbox(IWebDriver driver)
@@ -62,8 +80,10 @@ namespace ProtonMailQAAuto
         public List<string> GetInformationFromEmail()
         {
             List<string> result = new List<string>();
-            IWebElement title = _page.OpenEmail();
-            result.Add(title.Text);
+            IWebElement titleEmail = _page.OpenListEmails();
+            string title = titleEmail.GetAttribute("title");
+            result.Add(title);
+            Console.WriteLine($"The title of letter: {title}");
             result.Add(_page.GetEmail());
             return result;
         }
