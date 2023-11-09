@@ -4,11 +4,11 @@ using SeleniumExtras.WaitHelpers;
 
 namespace ProtonMailQAAuto.PageObjects
 {
-    public abstract class BaseClass
+    public abstract class BasePage
     {
-        IWebDriver _driver;
+        protected IWebDriver _driver;
         WebDriverWait _waiter;
-        public BaseClass(IWebDriver webDriver)
+        public BasePage(IWebDriver webDriver)
         {
             _driver = webDriver;
             _driver.Manage().Window.Maximize();

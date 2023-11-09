@@ -10,7 +10,7 @@ namespace ProtonMailQAAuto
         {
             IWebDriver driver = new ChromeDriver();
 
-            BaseClass protonMailBaseClass = new MainPage(driver);
+            BasePage protonMailBaseClass = new MainPage(driver);
 
             Console.WriteLine(protonMailBaseClass);
 

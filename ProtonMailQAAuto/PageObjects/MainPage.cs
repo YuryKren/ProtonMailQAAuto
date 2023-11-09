@@ -2,9 +2,8 @@
 
 namespace ProtonMailQAAuto.PageObjects
 {
-    public class MainPage : BaseClass
+    public class MainPage : BasePage
     {
-        protected IWebDriver _driver;
         const string URL_PART = "proton";
         const string NAME_PAGE = "Main page";
         const string MAIN_PAGE = "https://proton.me/";
@@ -12,7 +11,6 @@ namespace ProtonMailQAAuto.PageObjects
 
         public MainPage(IWebDriver driver) : base(driver)
         {
-            _driver = driver;
             if (driver.Url != MAIN_PAGE) 
             {
                 GoToUrl(MAIN_PAGE);

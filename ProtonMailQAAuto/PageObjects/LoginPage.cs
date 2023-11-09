@@ -2,9 +2,8 @@
 
 namespace ProtonMailQAAuto.PageObjects
 {
-    public class LoginPage : BaseClass
+    public class LoginPage : BasePage
     {
-        IWebDriver _driver;
         const string URL_PART = "login";
         const string NAME_PAGE = "Login page";
         const string USER_NAME_FIELD_ID = "username";
@@ -13,7 +12,6 @@ namespace ProtonMailQAAuto.PageObjects
 
         public LoginPage(IWebDriver driver) : base(driver)
         {
-            _driver = driver;
             CheckPageLoading(URL_PART, NAME_PAGE);
         }
 

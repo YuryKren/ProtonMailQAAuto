@@ -2,9 +2,8 @@
 
 namespace ProtonMailQAAuto.PageObjects
 {
-    public class UserPage : BaseClass
+    public class UserPage : BasePage
     {
-        IWebDriver _driver;
         const string URL_PART = "inbox";
         const string NAME_PAGE = "User page";
         const string SETTINGS_MENU = "//button[@data-testid='heading:userdropdown']";
@@ -26,7 +25,6 @@ namespace ProtonMailQAAuto.PageObjects
 
         public UserPage(IWebDriver driver) : base(driver)
         {
-            _driver = driver;
             CheckPageLoading(URL_PART, NAME_PAGE);
             DelayForLoadingPage(NEW_MESSAGE_BUTTON);
         }
