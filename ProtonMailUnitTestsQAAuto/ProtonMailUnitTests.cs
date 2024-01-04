@@ -38,7 +38,7 @@ namespace ProtonMailUnitTestsQAAuto
                 Thread.Sleep(3000);
             }
             var checkEmail = _secondUser.GetInformationFromEmail();
-            Assert.IsTrue(checkEmail[0].Contains(_firstUser.UserName) && checkEmail[1].Contains("Hello"));
+            Assert.IsTrue(checkEmail[0].Contains(_firstUser.UserName) && checkEmail[1].Contains(_firstUser.UserName));
             _secondUser.ReplyToLetter();
             _mainPage = _secondUser.LogoutFromMailbox();
             _firstUser.GoIntoYourMailbox(_driver, _mainPage);
@@ -49,7 +49,7 @@ namespace ProtonMailUnitTestsQAAuto
                 Thread.Sleep(3000);
             }
             checkEmail = _firstUser.GetInformationFromEmail();
-            Assert.IsTrue(checkEmail[0].Contains(_firstUser.UserName) && checkEmail[1].Contains("OK"));
+            Assert.IsTrue(checkEmail[0].Contains(_firstUser.UserName) && checkEmail[1].Contains(_secondUser.UserName));
             _firstUser.LogoutFromMailbox();
         }
 
